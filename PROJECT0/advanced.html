@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Search</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <ul class="navbar">
+        <li>CS50 Search</li>
+        <li><a href="advance_search.html">Advanced</a></li>
+    </ul>
+
+    <h3>Advanced Search</h3>
+    <hr>
+
+    <form action="https://google.com/search">
+        <table class="text-input-table">
+            <tr><td colspan="2"><h4>Find pages with...</h4></td></tr>
+            <tr>
+                <td>All of these words:</td>
+                <td><input name="as_q" type="text" class="searchbar-sm"></td>
+            </tr>
+            <tr>
+                <td>This exact word or phrase:</td>
+                <td><input name="as_epq" type="text" class="searchbar-sm"></td>
+            </tr>
+            <tr>
+                <td>Any of these words:</td>
+                <td><input name="as_oq" type="text" class="searchbar-sm"></td>
+            </tr>
+            <tr>
+                <td>None of these words:</td>
+                <td><input name="as_eq" type="text" class="searchbar-sm"></td>
+            </tr>
+            <tr>
+                <td>Numbers ranging from:</td>
+                <td>
+                    <input name="as_nlo" type="number" placeholder="Low" class="searchbar-sm" style="width: 48%; display: inline-block;">
+                    <input name="as_nhi" type="number" placeholder="High" class="searchbar-sm" style="width: 48%; display: inline-block;">
+                </td>
+            </tr>
+            <tr><td colspan="2"><h4>Then narrow your results by...</h4></td></tr>
+            <tr>
+                <td>Language:</td>
+                <td>
+                    <select name="lr" class="searchbar-sm">
+                        <option value="">Any Language</option>
+                        <option value="lang_en">English</option>
+                        <option value="lang_es">Spanish</option>
+                        <option value="lang_fr">French</option>
+                        <!-- Add more languages as needed -->
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Region:</td>
+                <td>
+                    <select name="cr" class="searchbar-sm">
+                        <option value="">Any Region</option>
+                        <option value="countryUS">United States</option>
+                        <option value="countryGB">United Kingdom</option>
+                        <option value="countryCA">Canada</option>
+                        <!-- Add more regions as needed -->
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Last update:</td>
+                <td>
+                    <select name="as_qdr" class="searchbar-sm">
+                        <option value="all">Anytime</option>
+                        <option value="d">Past 24 hours</option>
+                        <option value="w">Past week</option>
+                        <option value="m">Past month</option>
+                        <option value="y">Past year</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Site or domain:</td>
+                <td><input name="as_sitesearch" type="text" class="searchbar-sm" placeholder="example.com or .org, .edu"></td>
+            </tr>
+            <tr>
+                <td>File type:</td>
+                <td>
+                    <select name="as_filetype" class="searchbar-sm">
+                        <option value="">Any</option>
+                        <option value="pdf">PDF</option>
+                        <option value="doc">DOC</option>
+                        <option value="xls">XLS</option>
+                        <option value="ppt">PPT</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Usage rights:</td>
+                <td>
+                    <select name="rights" class="searchbar-sm">
+                        <option value="">Not filtered by license</option>
+                        <option value="cc_publicdomain">Free to use or share</option>
+                        <option value="cc_attribute">Free to use or share, even commercially</option>
+                        <option value="cc_sharealike">Free to use, share, or modify</option>
+                        <!-- Add more usage rights as needed -->
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" value="Advanced Search" class="searchbutton"></td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>
