@@ -1,0 +1,25 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia
+{% endblock %}
+
+{% block body %}
+<h1>Add Entry</h1>
+<form action="{% url 'add_entry' %}" method="post" class="add-entry-form">
+    {% csrf_token %}
+    <!-- You can add CSS classes to each form field for styling -->
+    Title
+    <div class="form-title-group"  >
+        <!-- {{ form.entry_title }} -->
+        <input type="text" id="title" name="entry_title" class="form-input" value="{{ title|default:'' }}" required>
+    </div>
+    Content
+    <div class="form-content-group">
+        <!-- {{ form.entry_content }} -->
+        <textarea id="content" name="entry_content" class="form-input" rows="10" cols="80" required>{{ content|default:'' }}</textarea>
+    </div>
+    <input type="submit" value="Add" class="submit-button">
+</form>
+
+{% endblock %}
