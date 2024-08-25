@@ -12,7 +12,7 @@ class New_entry(forms.Form):
     entry_title= forms.CharField(label="entry_title")
     entry_content = forms.CharField(
         label="entry_content",
-        widget=forms.Textarea(attrs={'rows': 10, 'cols': 20 ,'value': 'Default Content'})  # Customize size
+        widget=forms.Textarea(attrs={'rows': 20, 'cols': 40 ,'value': 'Default Content'})  # Customize size
     )
 
 # def add_entry(request):
@@ -37,12 +37,16 @@ class New_entry(forms.Form):
 
 def add_entry(request):
     if request.method == "POST":
+        entry_list = util.list_entries()
         entry_title = request.POST.get('entry_title')
         entry_content = request.POST.get('entry_content')
         if entry_title and entry_content:
+            for entry_name in entry_list:  # Rename the loop variable
+                if entry_title.lower() == entry_name.lower():
+                    return  render(request,"encyclopedia/error_save.html")
             # Save the new entry
             util.save_entry(entry_title,entry_content)
-            return HttpResponseRedirect(reverse("index"))  # Redirect to the index page after saving
+            return render(request,"encyclopedia/success_entry.html")
         else:
             # Handle case where title or content is missing
             return HttpResponse("Both title and content are required.", status=400)
@@ -57,11 +61,11 @@ def index(request):
     })
 
 def entry(request,title):
-    a = util.get_entry(title)
-    if a:
+    entry_content = util.get_entry(title)
+    if entry_content:
         return render(request, "encyclopedia/entry.html", {
             "entry_title": title,
-            "entry_content":a,
+            "entry_content":entry_content,
         })
     else:
         return render(request,"encyclopedia/error.html")
@@ -75,11 +79,48 @@ def search(request):
     if request.method == "POST":
         search_query = request.POST.get('q', '').lower()  # Rename the search variable
         e_lists = util.list_entries()
-
+        res_list = []
         for entry_name in e_lists:  # Rename the loop variable
             if search_query == entry_name.lower():  # Convert each entry to lowercase for comparison
                 return entry(request, entry_name)  # Pass the original entry (with correct case) to the view
-        
-        return render(request, "encyclopedia/error.html")  # If no match found
+            elif search_query in entry_name.lower():
+                res_list.append(entry_name)
+        if res_list:
+            return render(request, "encyclopedia/index.html", {
+                "entries": res_list
+            })
+        else:    
+            return render(request, "encyclopedia/error.html")  # If no match found
     else:
         return render(request, "encyclopedia/error.html")
+
+
+
+def edit_entry(request):
+    if request.method == "POST":
+        entry_title = request.POST.get("entry_title")
+        entry_content = util.get_entry(entry_title)
+        return render(request, "encyclopedia/edit_entry.html", {
+            "entry_title": entry_title,
+            "entry_content":entry_content,
+        })
+    else:
+        return render(request,"encyclopedia/error.html")
+    
+    
+def save_entry(request):
+    if request.method == "POST":
+        entry_title = request.POST.get("entry_title")
+        entry_content = request.POST.get("entry_content")
+        
+        # Save the edited entry (update the existing one)
+        util.save_entry(entry_title, entry_content)
+        
+        # Redirect to the entry's page
+        return entry(request,entry_title)
+    
+    else:
+        # If the request is not a POST request, show an error page
+        return render(request, "encyclopedia/error.html", {
+            "message": "Invalid request method."
+        })

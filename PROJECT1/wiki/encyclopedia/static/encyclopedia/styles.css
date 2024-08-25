@@ -1,3 +1,4 @@
+
 body {
     margin: 0;
     background-color: white;
@@ -40,10 +41,12 @@ textarea {
 /* Ensure your CSS file is correctly linked and loaded */
 
 .add-entry-form {
-    max-width: 400px;
+    
+    max-width: 90%;
+    max-height: 90%;
     margin: 0 auto;
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #ccaaf3;
     border-radius: 8px;
     background-color: #f9f9f9;
 }
@@ -69,15 +72,17 @@ textarea {
 
 .form-content-group textarea {
     width: 100%;
-    height: 100px; /* Increase height */
+    height: 250px; /* Increase height */
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
+    overflow-y: auto; /* Enables vertical scroll */
+    overflow-x: auto; /* Hides horizontal scroll */
 }
 
 .submit-button {
-    background-color: #007bff;
+    background-color: #3493f1;
     color: #fff;
     border: none;
     padding: 10px 15px;
@@ -87,4 +92,12 @@ textarea {
 
 .submit-button:hover {
     background-color: #0056b3;
+}
+
+.add_h1{
+    text-align:center;
+    text-decoration:antiquewhite ;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: #0056b3;
+
 }

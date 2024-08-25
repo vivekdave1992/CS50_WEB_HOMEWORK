@@ -1,0 +1,27 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia - Edit Entry
+{% endblock %}
+
+{% block body %}
+<h1 class="add_h1">Edit Entry</h1>
+<form action="{% url 'save_entry' %}" method="post" class="add-entry-form">
+    {% csrf_token %}
+    
+    <!-- Title Field -->
+    <div class="form-title-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="entry_title" class="form-input" value="{{ entry_title }}" required readonly>
+    </div>
+    
+    <!-- Content Field -->
+    <div class="form-content-group">
+        <label for="content">Content</label>
+        <textarea id="content" name="entry_content" class="form-input" rows="10" cols="80" required>{{ entry_content }}</textarea>
+    </div>
+    
+    <!-- Submit Button -->
+    <input type="submit" value="Save Changes" class="submit-button">
+</form>
+{% endblock %}
