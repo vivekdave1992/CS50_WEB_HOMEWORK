@@ -8,7 +8,7 @@
     <div>
         <form action="{% url 'edit_entry' %}" method="post">
             {% csrf_token %}
-            <input type="hidden" name="entry_title" value="{{ entry_title }}">
+            <input type="hidden" name="entry_title" value="{{ entry_title }}" hidden>
             <input type="submit" value="Edit">
         </form>
     </div>
@@ -16,6 +16,6 @@
     <h1>{{ entry_title }}</h1>
 
     <div>
-        {{ entry_content }}
+        {{ entry_content|safe }}
     </div>
 {% endblock %}
