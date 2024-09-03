@@ -1,3 +1,171 @@
+/* General body styles */
 body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* Styles for the listing index */
+.listing_index {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.listing_index ul {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+}
+
+.listing_index li {
+    background-color: rgb(226, 123, 123);
+    border: 1px solid #df0505;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    padding: 15px;
+    width: calc(50% - 30px); /* Two items per row, with space */
+    box-sizing: border-box;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.listing_index li:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.listing_index h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #007bff;
+}
+
+.listing_index img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.listing_index p {
+    margin: 0 0 10px;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+
+.listing_index p strong {
+    color: #555;
+}
+
+/* Button-like links */
+.listing_index a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.listing_index a:hover {
+    text-decoration: underline;
+}
+
+hr {
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+    .listing_index li {
+        width: calc(100% - 20px); /* Full width on smaller screens */
+    }
+}
+/* Container for the grid layout */
+.listing-container {
+    width: 100%;
     padding: 10px;
+    box-sizing: border-box;
+}
+
+/* Grid layout for listings */
+.listing-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between items */
+    justify-content: center; /* Center items horizontally */
+}
+
+/* Style for individual listing cards */
+.listing-card {
+    background-color: #fcf9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    max-width: 300px; /* Adjust the size as needed */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: 1 1 calc(33% - 20px); /* Adjusts width based on container size */
+    transition: transform 0.3s;
+    box-sizing: border-box;
+}
+
+.listing-card:hover {
+    transform: scale(1.05);
+    background-color: #a7b3f8;
+}
+
+/* Style for images */
+.listing-image {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Style for descriptions and other text */
+.listing-description,
+.listing-seller,
+.listing-current-bid,
+.listing-category {
+    margin: 10px 0;
+    object-fit: cover;
+}
+
+.listing-seller,
+.listing-current-bid,
+.listing-category {
+    font-weight: bold;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 1024px) {
+    .listing-card {
+        flex: 1 1 calc(50% - 20px); /* 2 items per row */
+    }
+}
+
+@media (max-width: 768px) {
+    .listing-card {
+        flex: 1 1 100%; /* 1 item per row */
+    }
+}
+/* Remove underline and default link styling */
+a {
+    text-decoration: none; /* Remove underline */
+    color: inherit; /* Inherit color from parent element */
+}
+
+/* Optional: Add styling for links if needed */
+a:hover {
+    color: #085bb4; /* Change color on hover */
+    text-decoration: none; /* Ensure no underline on hover */
 }

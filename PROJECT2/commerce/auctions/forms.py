@@ -33,3 +33,6 @@ class ListingForm(forms.ModelForm):
                 Submit('submit', 'Submit', css_class='btn btn-primary')
             )
         )
+
+    # Make the image_url field optional
+    image_url = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Image Link or URL'}))

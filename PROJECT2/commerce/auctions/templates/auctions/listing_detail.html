@@ -1,0 +1,10 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2>{{ listing.title }}</h2>
+<img src="{{ listing.image_url }}" alt="{{ listing.title }}" style="max-width: 500px; height: auto;">
+<p>{{ listing.description }}</p>
+<p><strong>Seller:</strong> {{ listing.seller.username }}</p>
+<p><strong>Current Bid:</strong> ${{ listing.current_bid }}</p>
+<p><strong>Category:</strong> {{ listing.category.catagory_name }}</p>
+{% endblock %}

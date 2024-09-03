@@ -1,13 +1,16 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from .forms import ListingForm
-from .models import User
+from .models import User,Listing
 
 def index(request):
-    return render(request, "auctions/index.html")
+    listings  = Listing.objects.all()
+    return render(request, "auctions/index.html",{
+        "listings":listings
+    })
 
 
 def login_view(request):
@@ -66,8 +69,16 @@ def create_listing(request):
     if request.method == 'POST':
         form = ListingForm(request.POST)
         if form.is_valid():
-            form.save()
+            listing = form.save(commit=False)
+            listing.seller = request.user  # Set the seller to the logged-in user
+            listing.save()
             return HttpResponseRedirect(reverse("index"))  # Replace with your redirect target
     else:
         form = ListingForm()
     return render(request, 'auctions/create_listing.html', {'form': form})
+
+
+
+def listing_detail(request, id):
+    listing = get_object_or_404(Listing, pk=id)
+    return render(request, 'auctions/listing_detail.html', {'listing': listing})
