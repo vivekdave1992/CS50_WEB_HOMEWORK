@@ -8,6 +8,8 @@ class User(AbstractUser):
 class Catagory(models.Model):
     catagory_name = models.CharField(max_length=64)
     
+    def __str__(self):
+        return f"{self.catagory_name}"
 class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=512)  # Increased length for detailed descriptions
@@ -18,4 +20,5 @@ class Listing(models.Model):
     current_bid = models.DecimalField(max_digits=10, decimal_places=2)  # Proper field for currency
     category = models.ForeignKey(Catagory, on_delete=models.CASCADE, blank=True, null=True,related_name="catagory")
     
-    
+    def __str__(self):
+        return f"{self.title} : {self.status}"
