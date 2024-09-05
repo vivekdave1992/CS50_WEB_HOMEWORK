@@ -171,3 +171,14 @@ a:hover {
 }
 
 
+.watchlist-count {
+    display: inline-block;
+    background-color: #FF6347; /* Tomato color */
+    color: #FFFFFF; /* White text */
+    border-radius: 20%;
+    padding: 0.1px 8px;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: top;
+    vertical-align: baseline;
+}
