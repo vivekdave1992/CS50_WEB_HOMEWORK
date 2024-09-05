@@ -6,7 +6,7 @@
     <div class="listing-container">
         <div class="listing-grid">
             {% for ls in listing_by_category %}
-            <a href="{% url 'listing_detail' ls.id %}" class="listing-link">    
+            <a href="{% url 'listing_detail' ls.id %}" class="listing-link">
             <div class="listing-card">
                     <h3 class="listing-title">{{ ls.title }}</h3>
                     <img src="{{ ls.image_url }}" alt="{{ ls.title }}" class="listing-image">

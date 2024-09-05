@@ -3,8 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    pass
-
+    watch_list = models.ManyToManyField("Listing",blank=True,  related_name='watched_by')
 class Category(models.Model):
     category_name = models.CharField(max_length=64)
     emoji = models.CharField(max_length=10, blank=True, null=True)  # Add this line
@@ -25,3 +24,4 @@ class Listing(models.Model):
     
     def __str__(self):
         return f"{self.title} : {self.status}"
+

@@ -1,10 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.urls import reverse
 from .forms import ListingForm
 from .models import User,Listing,Category
+
 
 def index(request):
     listings  = Listing.objects.all()
@@ -81,7 +84,17 @@ def create_listing(request):
 
 def listing_detail(request, id):
     listing = get_object_or_404(Listing, pk=id)
-    return render(request, 'auctions/listing_detail.html', {'listing': listing})
+    is_in_watch_list = False
+
+    if request.user.is_authenticated:
+        is_in_watch_list = listing in request.user.watch_list.all()
+
+    context = {
+        'listing': listing,
+        'is_in_watch_list': is_in_watch_list,
+    }
+    
+    return render(request, 'auctions/listing_detail.html', context)
 
 def category_list(request):
     categories = Category.objects.all()
@@ -93,3 +106,42 @@ def listings_by_category(request,category_id):
     listing_list = Listing.objects.filter(category=category, status=True)
     return render(request, 'auctions/listings_by_category.html', {'listing_by_category': listing_list,'category':category,})
     
+@login_required
+def add_to_watchlist(request,listing_id):
+    user = request.user
+    listing = get_object_or_404(Listing, id=listing_id)
+    user.watch_list.add(listing)
+    messages.success(request, f'{listing.title} has been added to your watchlist!')
+    return redirect('watchlist')  # Redirect back to the watchlist page
+
+
+    
+@login_required
+def remove_from_watchlist(request,listing_id):
+    user = request.user
+    listing = get_object_or_404(Listing, id=listing_id)
+    user.watch_list.remove(listing)
+    messages.success(request, f'{listing.title} has been removed from your watchlist!')
+    return redirect('watchlist')  # Redirect back to the watchlist page
+
+
+@login_required
+def watchlist(request):
+    watchlist = request.user.watch_list.all()  # Ensure it retrieves the listings in the watchlist
+    context = {
+        'listing_by_category': watchlist,
+        'user_name': request.user.username,  # Pass the user's name
+    }
+    return render(request, 'auctions/watchlist.html', context)
+
+
+
+@login_required
+def remove_multiple_from_watchlist(request):
+    if request.method == 'POST':
+        user = request.user
+        listing_ids = request.POST.getlist('listing_ids')
+        listings = Listing.objects.filter(id__in=listing_ids)
+        user.watch_list.remove(*listings)
+        messages.success(request, 'Selected items have been removed from your watchlist.')
+    return redirect('watchlist')
