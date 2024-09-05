@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from .forms import ListingForm
-from .models import User,Listing
+from .models import User,Listing,Category
 
 def index(request):
     listings  = Listing.objects.all()
@@ -82,3 +82,14 @@ def create_listing(request):
 def listing_detail(request, id):
     listing = get_object_or_404(Listing, pk=id)
     return render(request, 'auctions/listing_detail.html', {'listing': listing})
+
+def category_list(request):
+    categories = Category.objects.all()
+    return render(request, 'auctions/category_list.html', {'categories': categories})
+
+
+def listings_by_category(request,category_id):
+    category = get_object_or_404(Category, id=category_id)
+    listing_list = Listing.objects.filter(category=category, status=True)
+    return render(request, 'auctions/listings_by_category.html', {'listing_by_category': listing_list,'category':category,})
+    
