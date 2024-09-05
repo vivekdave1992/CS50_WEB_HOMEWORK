@@ -9,7 +9,7 @@
                     <a href="{% url 'listings_by_category' category.id %}" class="text-decoration-none">
                         <div class="card shadow-sm h-100">
                             <div class="card-body">
-                                <h5 class="card-title">{{ category.category_name }}</h5>
+                                <h5 class="card-title"> {{ category.emoji }} {{ category.category_name }}</h5>
                             </div>
                         </div>
                     </a>

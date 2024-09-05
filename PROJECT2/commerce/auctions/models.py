@@ -7,9 +7,12 @@ class User(AbstractUser):
 
 class Category(models.Model):
     category_name = models.CharField(max_length=64)
-    
+    emoji = models.CharField(max_length=10, blank=True, null=True)  # Add this line
+
     def __str__(self):
-        return f"{self.category_name}"
+        return f"{self.category_name} {self.emoji}"
+    
+
 class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=512)  # Increased length for detailed descriptions
