@@ -10,7 +10,7 @@ from .models import User,Listing,Category
 
 
 def index(request):
-    listings  = Listing.objects.all()
+    listings  = Listing.objects.filter(status=True)
     return render(request, 'auctions/index.html', {
         'listings': listings,})
 
