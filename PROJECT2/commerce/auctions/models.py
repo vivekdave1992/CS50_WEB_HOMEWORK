@@ -25,3 +25,12 @@ class Listing(models.Model):
     def __str__(self):
         return f"{self.title} : {self.status}"
 
+class Comment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True,related_name="userComment")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, blank=True, null=True,related_name="listingComment")
+    comment_time = models.DateTimeField(auto_now_add=True)  # Automatically adds current date and time
+    message = models.CharField(max_length=200)
+    objects = models.Manager()
+    
+    def __str__(self) -> str:
+        return f"{self.author} commented on {self.listing}  at {self.comment_time}"

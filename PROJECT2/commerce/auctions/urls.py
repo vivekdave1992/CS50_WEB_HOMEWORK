@@ -15,4 +15,5 @@ urlpatterns = [
     path('remove_from_watchlist/<int:listing_id>', views.remove_from_watchlist, name='remove_from_watchlist'),
     path('watchlist/', views.watchlist, name='watchlist'),
     # path('remove_multiple_from_watchlist/', views.remove_multiple_from_watchlist, name='remove_multiple_from_watchlist'),
+     path('add_comment/<int:listing_id>', views.add_comment, name='add_comment'),
 ]

@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404,redirect
 from django.urls import reverse
 from .forms import ListingForm
-from .models import User,Listing,Category
+from .models import User,Listing,Category,Comment
 
 
 def index(request):
@@ -87,10 +87,11 @@ def listing_detail(request, id):
 
     if request.user.is_authenticated:
         is_in_watch_list = listing in request.user.watch_list.all()
-
+    all_comments = Comment.objects.filter(listing=listing)
     context = {
         'listing': listing,
         'is_in_watch_list': is_in_watch_list,
+        'all_comments':all_comments,
     }
     
     return render(request, 'auctions/listing_detail.html', context)
@@ -146,4 +147,18 @@ def watchlist(request):
 #         user.watch_list.remove(*listings)
 #         messages.success(request, 'Selected items have been removed from your watchlist.')
 #     return redirect('watchlist')
+
+
+@login_required
+def add_comment (request,listing_id):
+    current_user = request.user
+    current_listing = get_object_or_404(Listing, id=listing_id)
+    message =  request.POST["New_comment"]
+    new_commnet = Comment(
+        author = current_user,
+        listing = current_listing,
+        message = message
+    )
+    new_commnet.save()
+    return HttpResponseRedirect(reverse("listing_detail", args=(listing_id, )))
 
