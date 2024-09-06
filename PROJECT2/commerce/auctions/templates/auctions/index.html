@@ -9,11 +9,11 @@
             <a href="{% url 'listing_detail' ls.id %}" class="listing-link">    
             <div class="listing-card">
                     <h3 class="listing-title">{{ ls.title }}</h3>
-                    <img src="{{ ls.image_url }}" alt="{{ ls.title }}" class="listing-image">
-                    <p class="listing-description">{{ ls.description }}</p>
+                    <img src="{{ ls.image_url }}" alt="{{ ls.title }}" class="card-img-top">
+                    <p class="card-text">{{ ls.description }}</p>
                     <p class="listing-seller"><strong>Seller:</strong> {{ ls.seller}}</p>
                     <p class="listing-current-bid"><strong>Current Bid:</strong> ${{ ls.current_bid }}</p>
-                    <p class="listing-category"><strong>Category:</strong> {{ ls.category.catagory_name }}</p>
+                    <p class="listing-category"><strong>Category:</strong> {{ ls.category.category_name }}</p>
                 </a>
                 {% if user.is_authenticated %}
                 <form action="{% url 'add_to_watchlist' ls.id %}" method="post">

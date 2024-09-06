@@ -182,3 +182,7 @@ a:hover {
     text-align: top;
     vertical-align: baseline;
 }
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}

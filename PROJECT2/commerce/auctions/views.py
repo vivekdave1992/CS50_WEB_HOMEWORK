@@ -12,7 +12,8 @@ from .models import User,Listing,Category
 def index(request):
     listings  = Listing.objects.filter(status=True)
     return render(request, 'auctions/index.html', {
-        'listings': listings,})
+        'listings': listings,
+        })
 
 def login_view(request):
     if request.method == "POST":
@@ -104,24 +105,26 @@ def listings_by_category(request,category_id):
     listing_list = Listing.objects.filter(category=category, status=True)
     return render(request, 'auctions/listings_by_category.html', {'listing_by_category': listing_list,'category':category,})
 
+
 @login_required
-def add_to_watchlist(request,listing_id):
-    user = request.user
-    listing = get_object_or_404(Listing, id=listing_id)
-    user.watch_list.add(listing)
-    messages.success(request, f'{listing.title} has been added to your watchlist!')
-    return redirect('watchlist')  # Redirect back to the watchlist page
+def add_to_watchlist(request, listing_id):
+    if request.method == 'POST':
+        user = request.user
+        listing = get_object_or_404(Listing, id=listing_id)
+        user.watch_list.add(listing)
+        messages.success(request, f'{listing.title} has been added to your watchlist!')
+        return redirect('watchlist')  # Redirect back to the watchlist page
+    return redirect('index')  # Redirect to index if method is not POST
 
-
-    
 @login_required
-def remove_from_watchlist(request,listing_id):
-    user = request.user
-    listing = get_object_or_404(Listing, id=listing_id)
-    user.watch_list.remove(listing)
-    messages.success(request, f'{listing.title} has been removed from your watchlist!')
-    return redirect('watchlist')  # Redirect back to the watchlist page
-
+def remove_from_watchlist(request, listing_id):
+    if request.method == 'POST':
+        user = request.user
+        listing = get_object_or_404(Listing, id=listing_id)
+        user.watch_list.remove(listing)
+        messages.success(request, f'{listing.title} has been removed from your watchlist!')
+        return redirect('watchlist')  # Redirect back to the watchlist page
+    return redirect('index')  # Redirect to index if method is not POST
 
 @login_required
 def watchlist(request):
@@ -134,12 +137,13 @@ def watchlist(request):
 
 
 
-@login_required
-def remove_multiple_from_watchlist(request):
-    if request.method == 'POST':
-        user = request.user
-        listing_ids = request.POST.getlist('listing_ids')
-        listings = Listing.objects.filter(id__in=listing_ids)
-        user.watch_list.remove(*listings)
-        messages.success(request, 'Selected items have been removed from your watchlist.')
-    return redirect('watchlist')
+# @login_required
+# def remove_multiple_from_watchlist(request):
+#     if request.method == 'POST':
+#         user = request.user
+#         listing_ids = request.POST.getlist('listing_ids')
+#         listings = Listing.objects.filter(id__in=listing_ids)
+#         user.watch_list.remove(*listings)
+#         messages.success(request, 'Selected items have been removed from your watchlist.')
+#     return redirect('watchlist')
+

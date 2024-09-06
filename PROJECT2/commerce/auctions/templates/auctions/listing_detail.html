@@ -13,18 +13,26 @@
     {% endif %}
 
     <h2>{{ listing.title }}</h2>
-    <img src="{{ listing.image_url }}" alt="{{ listing.title }}" style="max-width: 500px; height: auto;">
+    <img src="{{ listing.image_url }}" alt="{{ listing.title }}" height="400px" >
+    <!-- style="max-width: 500px; height: auto;" -->
     <p>{{ listing.description }}</p>
     <p><strong>Seller:</strong> {{ listing.seller.username }}</p>
     <p><strong>Current Bid:</strong> ${{ listing.current_bid }}</p>
+    
     <p><strong>Category:</strong> {{ listing.category.category_name }}</p>
 
     {% if user.is_authenticated %}
         <!-- Show "Add to Watch List" button only if it's not already in the watch list -->
         {% if not is_in_watch_list %}
-            <a href="{% url 'add_to_watchlist' listing.id %}" class="btn btn-primary">Add to Watch List</a>
+            <form action="{% url 'add_to_watchlist' listing.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Add to Watch List</button>
+            </form>
         {% else %}
-            <a href="{% url 'remove_from_watchlist' listing.id %}" class="btn btn-danger">Remove From Watch List</a>
+            <form action="{% url 'remove_from_watchlist' listing.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Remove From Watch List</button>
+            </form>
         {% endif %}
     {% else %}
         <p><a href="{% url 'login' %}" class="btn btn-success" >Log in</a> to manage your watchlist.</p>
