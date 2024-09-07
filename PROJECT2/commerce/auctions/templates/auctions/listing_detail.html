@@ -36,7 +36,7 @@
     <p><strong>Seller:</strong> {{ listing.seller.username }}</p>
     <p><strong>Starting Bid:</strong> ${{ listing.current_bid }}</p>
     <p><strong>Current Bid:</strong> ${{ listing.highest_bid}}</p>
-    <p>Bid:count {{ listing.bid_count }}</p>
+    <p>Bid count <strong> {{ listing.bid_count }} </strong></p>
     
     <form method="post" action="{% url 'add_bid' listing.id %}">
         {% csrf_token %}
