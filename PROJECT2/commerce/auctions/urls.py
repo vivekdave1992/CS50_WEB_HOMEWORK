@@ -1,6 +1,7 @@
 from django.urls import path
-
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -16,4 +17,5 @@ urlpatterns = [
     path('watchlist/', views.watchlist, name='watchlist'),
     # path('remove_multiple_from_watchlist/', views.remove_multiple_from_watchlist, name='remove_multiple_from_watchlist'),
     path('add_comment/<int:listing_id>', views.add_comment, name='add_comment'),
-]
+    path('add_bid/<int:listing_id>', views.add_bid, name='add_bid'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

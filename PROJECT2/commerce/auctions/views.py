@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404,redirect
 from django.urls import reverse
 from .forms import ListingForm
-from .models import User,Listing,Category,Comment
+from .models import User,Listing,Category,Comment,Bid
 
 
 def index(request):
@@ -153,7 +153,7 @@ def watchlist(request):
 def add_comment (request,listing_id):
     current_user = request.user
     current_listing = get_object_or_404(Listing, id=listing_id)
-    message =  request.POST["New_comment"]
+    message = request.POST.get("New_comment")
     new_commnet = Comment(
         author = current_user,
         listing = current_listing,
@@ -161,4 +161,30 @@ def add_comment (request,listing_id):
     )
     new_commnet.save()
     return HttpResponseRedirect(reverse("listing_detail", args=(listing_id, )))
+
+
+@login_required
+def add_bid(request, listing_id):
+    if request.method == 'POST':
+        listing = get_object_or_404(Listing, id=listing_id)
+        bid_amount = float(request.POST.get('bid_amount', 0))
+        bid_amount = round(bid_amount, 2)
+        # Check if the new bid is higher than the current highest bid
+        if bid_amount <= listing.highest_bid:
+            messages.error(request, 'Bid amount must be higher than the current highest bid.')
+            return redirect('listing_detail', id=listing_id)
+        # Create the new bid
+        new_bid = Bid(
+            buyer_user=request.user,
+            bid_listing=listing,
+            buyer_bid=bid_amount
+        )
+        new_bid.save()
+        # Update the highest bid and bid count
+        listing.highest_bid = bid_amount
+        listing.bid_count = Bid.objects.filter(bid_listing=listing).count()
+        listing.save()
+        return redirect('listing_detail', id=listing_id)
+    else:
+        return redirect('listing_detail', id=listing_id)
 

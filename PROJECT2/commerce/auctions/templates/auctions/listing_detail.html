@@ -34,7 +34,17 @@
     <!-- style="max-width: 500px; height: auto;" -->
     <p row mx-3 >{{ listing.description }}</p>
     <p><strong>Seller:</strong> {{ listing.seller.username }}</p>
-    <p><strong>Current Bid:</strong> ${{ listing.current_bid }}</p>
+    <p><strong>Starting Bid:</strong> ${{ listing.current_bid }}</p>
+    <p><strong>Current Bid:</strong> ${{ listing.highest_bid}}</p>
+    <p>Bid:count {{ listing.bid_count }}</p>
+    
+    <form method="post" action="{% url 'add_bid' listing.id %}">
+        {% csrf_token %}
+        <label for="bid_amount">Enter Your Bid:</label>
+        <input type="number" id="bid_amount" name="bid_amount" step="0.01" min="{{listing.highest_bid}}" required>
+        <button type="submit">Place Bid</button>
+    </form>
+
     <p><strong>Category:</strong> {{ listing.category.category_name }}</p>
 
     <h2 style="text-align: left;">Comments </h2>
