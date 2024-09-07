@@ -38,6 +38,11 @@
                 {% endfor %}
             </div>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'completed_listing' %}">Completed Listing 
+            </a>
+        </li>    
+
         {% if user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'create_listing' %}">Create Listing</a>
@@ -45,6 +50,10 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'watchlist' %}">Watchlist 
                     <span class="watchlist-count">{{ watchlist_count }}</span>
+                </a>
+            </li>    
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'user_listing' %}">Your Listing 
                 </a>
             </li>    
             <li class="nav-item">

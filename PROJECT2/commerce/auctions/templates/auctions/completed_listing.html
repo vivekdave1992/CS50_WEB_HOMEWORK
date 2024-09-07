@@ -1,0 +1,44 @@
+{% extends "auctions/layout.html" %}
+
+
+{% block body %}
+<h2>Completed listing</h2>
+
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+            <div class="alert alert-info">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+<div class="listing-container">
+    <div class="listing-grid">
+        {% for ls in c_listing %}
+        <a href="{% url 'listing_detail' ls.id %}" class="listing-link">
+            <div class="listing-card">
+                <h3 class="listing-title">{{ ls.title }}</h3>
+                <img src="{{ ls.image_url }}" alt="{{ ls.title }}" class="listing-image">
+                <p class="listing-description">{{ ls.description }}</p>
+                <p class="listing-seller"><strong>Seller:</strong> {{ ls.seller.username }}</p>
+                <p class="listing-current-bid"><strong>Starting Bid:</strong> ${{ ls.current_bid }}</p>
+                {% if ls.current_bid < ls.highest_bid%}
+                    <p class="listing-current-bid"><strong>Current Bid:</strong> ${{ ls.highest_bid }}</p>
+                {% endif %}
+                <p class="listing-category"><strong>Category:</strong> {{ ls.category.category_name }}</p>
+            </a>
+         <!-- Add "Remove from Watchlist" button -->
+        <form action="{% url 'remove_from_watchlist' ls.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Remove from Watchlist</button>
+        </form>
+        </div>
+        {% empty %}
+        <p>No items in In This list.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

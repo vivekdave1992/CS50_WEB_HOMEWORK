@@ -3,7 +3,7 @@
 {% block body %}
     <!-- Display messages -->
     {% if messages %}
-        <div>
+        <div class="alert-container">
             {% for message in messages %}
                 <div class="alert alert-info">
                     {{ message }}
@@ -12,62 +12,68 @@
         </div>
     {% endif %}
 
-    <h2>{{ listing.title }}</h2>
-        {% if user.is_authenticated %}
-            <!-- Show "Add to Watch List" button only if it's not already in the watch list -->
-            {% if not is_in_watch_list %}
-                <form action="{% url 'add_to_watchlist' listing.id %}" method="POST">
+    <!-- Listing Detail -->
+    <div class="listing-detail-container">
+        <div class="listing-detail">
+            <div class="listing-image-container">
+                <img src="{{ listing.image_url }}" alt="{{ listing.title }}" class="listing-image">
+            </div>
+            <div class="listing-info">
+                <h2>{{ listing.title }}</h2>
+                <p class="listing-description">{{ listing.description }}</p>
+                <p><strong>Seller:</strong> {{ listing.seller.username }}</p>
+                <p><strong>Starting Bid:</strong> ${{ listing.current_bid }}</p>
+                <p><strong>Current Bid:</strong> ${{ listing.highest_bid }}</p>
+                <p>Bid count: <strong>{{ listing.bid_count }}</strong></p>
+                <p><strong>Category:</strong> {{ listing.category.category_name }}</p>
+
+                {% if user.is_authenticated %}
+                    {% if user != listing.seller and listing.status %}
+                        <form method="post" action="{% url 'add_bid' listing.id %}" class="bid-form">
+                            {% csrf_token %}
+                            <label for="bid_amount">Enter Your Bid:</label>
+                            <input type="number" id="bid_amount" name="bid_amount" step="0.01" min="{{listing.highest_bid}}" required>
+                            <button type="submit" class="btn btn-primary">Place Bid</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    {% if user == listing.seller and listing.status %}
+                        <form action="{% url 'close_listing' listing.id %}" method="POST" class="close-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Close Bid</button>
+                        </form>
+                    {% else %}
+                        <p><strong>Buyer:</strong> {{ listing.buyer }}</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="comments-section">
+            <h2>Comments</h2>
+            {% if user.is_authenticated %}
+                <form action="{% url 'add_comment' listing.id %}" method="post" class="comment-form">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary">Add to Watch List</button>
-                </form>
-            {% else %}
-                <form action="{% url 'remove_from_watchlist' listing.id %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Remove From Watch List</button>
+                    <div class="form-group">
+                        <label for="New_comment" class="form-label">Add Comment</label>
+                        <textarea name="New_comment" class="form-control" id="New_comment" rows="4" placeholder="Enter your comment here" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-warning">Add Comment</button>
                 </form>
             {% endif %}
-        {% else %}
-            <p><a href="{% url 'login' %}" class="btn btn-success" >Log in</a> to manage your watchlist.</p>
-        {% endif %}
 
-    <img src="{{ listing.image_url }}" alt="{{ listing.title }}" height="400px" >
-    <!-- style="max-width: 500px; height: auto;" -->
-    <p row mx-3 >{{ listing.description }}</p>
-    <p><strong>Seller:</strong> {{ listing.seller.username }}</p>
-    <p><strong>Starting Bid:</strong> ${{ listing.current_bid }}</p>
-    <p><strong>Current Bid:</strong> ${{ listing.highest_bid}}</p>
-    <p>Bid count <strong> {{ listing.bid_count }} </strong></p>
-    
-    <form method="post" action="{% url 'add_bid' listing.id %}">
-        {% csrf_token %}
-        <label for="bid_amount">Enter Your Bid:</label>
-        <input type="number" id="bid_amount" name="bid_amount" step="0.01" min="{{listing.highest_bid}}" required>
-        <button type="submit">Place Bid</button>
-    </form>
-
-    <p><strong>Category:</strong> {{ listing.category.category_name }}</p>
-
-    <h2 style="text-align: left;">Comments </h2>
-    {% if user.is_authenticated %}
-        <form action="{% url 'add_comment' listing.id %}" method="post">
-            {% csrf_token %}
-            <div class="form-group mt-4">
-                <label for="New_comment" class="form-label">Add Comment</label>
-                <textarea name="New_comment" class="form-control" id="New_comment" rows="4" placeholder="Enter your comment here" required></textarea>
-            </div>
-            <div class="form-group mt-3">
-                <button  type="submit" class="btn btn-warning">Add Comment</button>
-            </div>
-        </form>
-    {% endif %}
-
-    <br/>
-    <ul class="list-group"></ul>
-    {%  for comment in all_comments %}
-        <li class="list-group-item">{{comment.message}}
-            <br/>
-            <p style="text-align: end;" > Posted by <strong>{{ comment.author}} </strong> at {{ comment.comment_time|date:"d M, Y H:i" }}</p>
-        </li>
-    {% endfor%}
-    </ul>
-    {% endblock %}
+            <ul class="comment-list">
+                {% for comment in all_comments %}
+                    <li class="comment-item">
+                        <p>{{ comment.message }}</p>
+                        <p class="comment-author">Posted by <strong>{{ comment.author }}</strong> at {{ comment.comment_time|date:"d M, Y H:i" }}</p>
+                    </li>
+                {% empty %}
+                    <p>No comments yet.</p>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

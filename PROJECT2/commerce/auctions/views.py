@@ -188,3 +188,41 @@ def add_bid(request, listing_id):
     else:
         return redirect('listing_detail', id=listing_id)
 
+@login_required
+def close_listing(request, listing_id):
+    if request.method == 'POST':
+        listing = get_object_or_404(Listing, id=listing_id)
+
+        # Fetch the highest bid using the correct field name bid_listing
+        highest_bid = Bid.objects.filter(bid_listing=listing).order_by('-buyer_bid').first()
+
+        if highest_bid:  # Ensure there's at least one bid
+            listing.buyer = highest_bid.buyer_user  # Assign the highest bidder as buyer
+            listing.status = False  # Close the listing
+            listing.save()
+            messages.success(request, f'Listing "{listing.title}" has been closed. Buyer: {highest_bid.buyer_user}')
+        else:
+            messages.warning(request, 'No bids found for this listing.')
+
+        return redirect('listing_detail', id=listing_id)
+
+    return redirect('listing_detail', id=listing_id)
+
+
+
+@login_required
+def user_listing(request):
+    user_listings = Listing.objects.filter(seller=request.user)
+    context = {
+        'user_listing': user_listings,
+        'user_name': request.user.username,  # Pass the user's name
+    }
+    return render(request, 'auctions/user_listing.html', context)
+
+
+def completed_listing(request):
+    c_listings  = Listing.objects.filter(status=False)
+    context = {
+        'c_listing': c_listings,
+    }
+    return render(request, 'auctions/completed_listing.html', context)

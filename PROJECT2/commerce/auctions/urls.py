@@ -18,4 +18,7 @@ urlpatterns = [
     # path('remove_multiple_from_watchlist/', views.remove_multiple_from_watchlist, name='remove_multiple_from_watchlist'),
     path('add_comment/<int:listing_id>', views.add_comment, name='add_comment'),
     path('add_bid/<int:listing_id>', views.add_bid, name='add_bid'),
+    path('close_listing/<int:listing_id>', views.close_listing, name='close_listing'),
+    path('user_listing/',views.user_listing,name='user_listing'),
+    path('completed_listing/',views.completed_listing,name='completed_listing'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
