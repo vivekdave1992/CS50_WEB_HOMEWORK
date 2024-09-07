@@ -46,16 +46,15 @@
                 <textarea name="New_comment" class="form-control" id="New_comment" rows="4" placeholder="Enter your comment here" required></textarea>
             </div>
             <div class="form-group mt-3">
-                <button type="submit" class="btn btn-warning">Add Comment</button>
+                <button  type="submit" class="btn btn-warning">Add Comment</button>
             </div>
         </form>
     {% endif %}
 
-
     <br/>
     <ul class="list-group"></ul>
     {%  for comment in all_comments %}
-        <li class="list-group-item">{{comment.message}} 
+        <li class="list-group-item">{{comment.message}}
             <br/>
             <p style="text-align: end;" > Posted by <strong>{{ comment.author}} </strong> at {{ comment.comment_time|date:"d M, Y H:i" }}</p>
         </li>
