@@ -12,6 +12,15 @@
         </div>
     {% endif %}
 
+    {% if user.is_authenticated %}
+        {% if user == listing.buyer and not listing.status %}
+            <div class="alert alert-success alert-container text-center">
+                <strong>Congratulations!</strong> You have successfully won this bid.
+            </div>
+        {% endif %}
+    {% endif %}
+
+
     <!-- Listing Detail -->
     <div class="listing-detail-container">
         <div class="listing-detail">
@@ -63,7 +72,9 @@
                     <button type="submit" class="btn btn-warning">Add Comment</button>
                 </form>
             {% endif %}
-
+        </div>
+        <div class="card" style="background-color: rgb(252, 250, 247);" >
+            <div class="card-body">
             <ul class="comment-list">
                 {% for comment in all_comments %}
                     <li class="comment-item">
@@ -74,6 +85,8 @@
                     <p>No comments yet.</p>
                 {% endfor %}
             </ul>
+            </div>
         </div>
+        
     </div>
 {% endblock %}
