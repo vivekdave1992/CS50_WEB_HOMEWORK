@@ -1,14 +1,156 @@
-textarea {
-    min-height: 400px;
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f1f3f4;
+    margin: 0;
+    padding: 0;
 }
 
-.list-group-item{
-    border: 1p solid black;
-}
-.read{
-    background-color: white;
+button {
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
 }
 
-.unread{
-    background-color: rgb(179, 179, 179);
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Header Styles */
+#header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#header h2 {
+    margin: 0;
+}
+
+#header .btn {
+    margin: 0 5px;
+}
+
+/* Email View Styles */
+#emails-view {
+    padding: 20px;
+}
+
+#emails-view .list-group-item:hover {
+    background-color: #7eb2f7;
+}
+
+.list-group-item {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+/* Differentiating Read and Unread Emails */
+.read {
+    background-color: #c7c7c7; /* Lighter gray for read emails */
+    border-left: 5px solid #d0d0d0; /* Subtle left border for read emails */
+}
+
+.unread {
+    background-color: #ffffff; /* White background for unread emails */
+    border-left: 5px solid #1a73e8; /* Blue left border for unread emails */
+    font-weight: bold; /* Bold text for unread emails */
+}
+
+/* Email Content View Styles */
+#email-content-view {
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#email-content-view h5 {
+    margin: 0;
+    font-size: 18px;
+}
+
+#email-content-view h6 {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+#email-content-view p {
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+#email-content-view button {
+    background-color: #1a73e8;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#email-content-view button:hover {
+    background-color: #155ab6;
+}
+
+/* Compose View Styles */
+#compose-view {
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#compose-view h3 {
+    margin: 0 0 10px 0;
+}
+
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+textarea.form-control {
+    min-height: 400px; /* Minimum height for the textarea */
+    resize: vertical; /* Allow vertical resizing */
+}
+
+/* Submit Button Styles */
+input[type="submit"] {
+    background-color: #1a73e8;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #155ab6;
+}
+
+/* Archive Button Styles */
+#email-content-view button.archive-btn {
+    background-color: #34a853; /* Green background for archive button */
+    color: #ffffff;
+}
+
+#email-content-view button.archive-btn:hover {
+    background-color: #2c8e3f; /* Darker green on hover */
 }
