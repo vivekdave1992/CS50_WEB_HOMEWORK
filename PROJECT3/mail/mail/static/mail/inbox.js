@@ -77,15 +77,17 @@ function show_email(email_id){
         emailContentView.append(email_element);
         // Reply from Current Email
         document.querySelector('#reply').addEventListener('click', () => load_reply(email));
+
+         // Mark as Read
+      if (!email.read){
+        fetch(`/emails/${email_id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+              read: true
+          })
+        })
+      }
     });
-    // Mark as Read
-    fetch(`/emails/${email_id}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-          read: true
-      })
-    })
-  
 }
 function archive_email(email_id, archive_state) {
   fetch(`/emails/${email_id}`, {
