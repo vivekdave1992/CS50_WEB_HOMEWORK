@@ -89,6 +89,8 @@ function show_email(email_id){
       }
     });
 }
+
+
 function archive_email(email_id, archive_state) {
   fetch(`/emails/${email_id}`, {
       method: 'PUT',
@@ -97,8 +99,13 @@ function archive_email(email_id, archive_state) {
       })
   }).then(() => {
       console.log(`Email ${archive_state ? "archived" : "unarchived"} successfully!`);
+      // Now reload the mailbox after the state change is confirmed
+      load_mailbox('inbox');
+  }).catch(error => {
+      console.error('Error:', error);
   });
 }
+
 
 
 function load_mailbox(mailbox) {
