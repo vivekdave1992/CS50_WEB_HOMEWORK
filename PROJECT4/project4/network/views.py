@@ -9,8 +9,12 @@ from .models import User,Post,PostComment
 
 def index(request):
     all_post= Post.objects.all().order_by('last_updated').reverse()
+    paginator = Paginator(all_post,1)
+    page_number = request.GET.get('page')
+    post_of_page = paginator.get_page(page_number)
     return render(request, "network/index.html",{
         "all_post":all_post,
+        "post_of_page":post_of_page,
     })
 
 

@@ -18,11 +18,11 @@
     <div id="post-content-view">
     </div>
     <div id="all_post" class="post-container">
-        {% for post in all_post %}
+        {% for post in post_of_page %}
         <div class="post-card">
             <div class="post-header">
                 <h5 class="username">@{{ post.poster.username }}</h5>
-                
+
             </div>
             <div class="post-body">
                 <p class="content">{{ post.post_content }}</p>
@@ -33,7 +33,24 @@
         </div>
         {% endfor %}
     </div>
-    
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <!-- Previous Button -->
+            {% if post_of_page.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ post_of_page.previous_page_number }}" tabindex="-1">Previous</a>
+            </li>
+            {% endif %}
+
+        <!-- Next Button -->
+            {% if post_of_page.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ post_of_page.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
 </div>
 
 <script src="{% static 'network/index.js' %}"></script>
