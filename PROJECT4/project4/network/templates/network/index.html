@@ -1,0 +1,40 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+<div id="post-view">
+    <h3>All Posts</h3>
+    {% if user.is_authenticated %}
+    <div>
+        <h2>New Post</h2>
+        <form id="post-form" action="{% url 'add_post' %}" method="post" >
+            {% csrf_token %}
+            <textarea class="form-control" id="post-body"  name = "content"></textarea>
+            <button id="submit-btn" class="btn btn-primary">Post</button>
+        </form>
+    </div>
+    {% endif %}
+    <div id="post-content-view">
+    </div>
+    <div id="all_post" class="post-container">
+        {% for post in all_post %}
+        <div class="post-card">
+            <div class="post-header">
+                <h5 class="username">@{{ post.poster.username }}</h5>
+                
+            </div>
+            <div class="post-body">
+                <p class="content">{{ post.post_content }}</p>
+            </div>
+            <div class="post-footer">
+                <p class="date">Last updated: {{ post.last_updated }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+</div>
+
+<script src="{% static 'network/index.js' %}"></script>
+{% endblock %}

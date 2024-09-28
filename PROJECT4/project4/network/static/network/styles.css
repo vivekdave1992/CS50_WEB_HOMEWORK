@@ -1,0 +1,46 @@
+/* Container for all posts */
+.post-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto; /* Center the container */
+    padding: 20px;
+}
+
+/* Individual post card */
+.post-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    margin-bottom: 20px; /* Space between posts */
+    padding: 20px; /* Padding inside the card */
+    border: 1px solid #ddd; /* Light border */
+}
+
+/* Post header */
+.post-header {
+    border-bottom: 1px solid #f0f0f0; /* Divider between header and body */
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+/* Username styling */
+.username {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Post body content */
+.post-body .content {
+    font-size: 1rem;
+    color: #555;
+    margin: 0; /* Remove default margin from p element */
+}
+
+/* Post footer for date */
+.post-footer .date {
+    font-size: 0.875rem;
+    color: #888;
+    text-align: right;
+    margin-top: 20px; /* Space between content and date */
+}

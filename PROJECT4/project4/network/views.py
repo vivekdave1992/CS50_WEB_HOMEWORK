@@ -3,12 +3,15 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-
-from .models import User
+from django.core.paginator import Paginator
+from .models import User,Post,PostComment
 
 
 def index(request):
-    return render(request, "network/index.html")
+    all_post= Post.objects.all().order_by('last_updated').reverse()
+    return render(request, "network/index.html",{
+        "all_post":all_post,
+    })
 
 
 def login_view(request):
@@ -61,3 +64,18 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def add_post(request):
+    if request.method == "POST":
+        content = request.POST.get("content")  # Using .get() to avoid KeyError
+        if content:  # Ensure that content is not empty
+            user = User.objects.get(pk=request.user.id)
+            post = Post(post_content=content, poster=user)
+            post.save()
+            return HttpResponseRedirect(reverse('index'))  # Assuming 'index' is your URL pattern name
+        else:
+            # You can handle the case where content is empty here
+            return HttpResponseRedirect(reverse('index'))
+    else:
+        return HttpResponseRedirect(reverse('index'))  # If request is not POST
+    
