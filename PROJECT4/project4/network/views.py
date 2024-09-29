@@ -4,12 +4,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
-from .models import User,Post,PostComment
+from .models import User,Post,PostComment,Follow
 
 
 def index(request):
     all_post= Post.objects.all().order_by('last_updated').reverse()
-    paginator = Paginator(all_post,1)
+    paginator = Paginator(all_post,10)
     page_number = request.GET.get('page')
     post_of_page = paginator.get_page(page_number)
     return render(request, "network/index.html",{
@@ -82,4 +82,21 @@ def add_post(request):
             return HttpResponseRedirect(reverse('index'))
     else:
         return HttpResponseRedirect(reverse('index'))  # If request is not POST
-    
+
+
+def profile(request,user_id):
+    user = User.objects.get(pk=user_id)
+    all_post= Post.objects.filter(poster=user).order_by('last_updated').reverse()
+    paginator = Paginator(all_post,10)
+    page_number = request.GET.get('page')
+    post_of_page = paginator.get_page(page_number)
+    followers_count = Follow.objects.filter(following=user).count()
+    following_count = Follow.objects.filter(follower=user).count()
+
+    return render(request, "network/profile.html",{
+        "all_post":all_post,
+        "post_of_page":post_of_page,
+        "username":user,
+        "followers_count":followers_count,
+        "following_count":following_count
+    })

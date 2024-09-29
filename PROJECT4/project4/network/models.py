@@ -3,19 +3,18 @@ from django.db import models
 
 
 class User(AbstractUser):
-    following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
-
+    # Remove the ManyToManyField, as the Follow model will handle the relationships
     def serialize(self):
         return {
             "id": self.id,
             "username": self.username,
             "email": self.email,
-            "followers": [user.username for user in self.followers.all()],  # List of followers
-            "following": [user.username for user in self.following.all()]   # List of users being followed
+            "followers": [user.follower.username for user in self.follower_set.all()],  # List of followers using the Follow model
+            "following": [user.following.username for user in self.following_set.all()]  # List of users being followed using the Follow model
         }
 
     def __str__(self):
-        return f"User {self.username} with {self.followers.count()} followers"
+        return f"User {self.username} with {self.follower_set.count()} followers"
 
 
 class Post(models.Model):
@@ -57,3 +56,24 @@ class PostComment(models.Model):  # Changed to 'PostComment' for better clarity
 
     def __str__(self):
         return f"{self.author} commented on Post {self.post.id} at {self.comment_time}"
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey(User, related_name='following_set', on_delete=models.CASCADE)
+    following = models.ForeignKey(User, related_name='follower_set', on_delete=models.CASCADE)
+    followed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['follower', 'following'], name='unique_following')
+        ]
+
+    def save(self, *args, **kwargs):
+        # Prevent a user from following themselves
+        if self.follower == self.following:
+            raise ValueError("Users cannot follow themselves.")
+        super(Follow, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.follower.username} follows {self.following.username}"
+
