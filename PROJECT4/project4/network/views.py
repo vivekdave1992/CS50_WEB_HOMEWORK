@@ -85,18 +85,63 @@ def add_post(request):
 
 
 def profile(request,user_id):
-    user = User.objects.get(pk=user_id)
-    all_post= Post.objects.filter(poster=user).order_by('last_updated').reverse()
+    profile_user = User.objects.get(pk=user_id)
+    all_post= Post.objects.filter(poster=profile_user).order_by('last_updated').reverse()
+    followers = Follow.objects.filter(following=profile_user)
+    following = Follow.objects.filter(follower=profile_user)
+    current_user =  User.objects.get(pk= request.user.id)
+    isFollowing = False
+    if request.user.is_authenticated:
+        isFollowing = followers.filter(follower=current_user).exists()
+        
     paginator = Paginator(all_post,10)
     page_number = request.GET.get('page')
     post_of_page = paginator.get_page(page_number)
-    followers_count = Follow.objects.filter(following=user).count()
-    following_count = Follow.objects.filter(follower=user).count()
-
+    
     return render(request, "network/profile.html",{
         "all_post":all_post,
         "post_of_page":post_of_page,
-        "username":user,
-        "followers_count":followers_count,
-        "following_count":following_count
+        "profile_user":profile_user,
+        "followers":followers,
+        "following":following,
+        "isFollowing": isFollowing,
+    })
+
+def follow_toggle(request):
+    # Get the profile user id from the POST request
+    profile_user_id = request.POST.get('profile_user')
+    profile_user = User.objects.get(pk=profile_user_id)
+    current_user = User.objects.get(pk=request.user.id)
+    
+    # Check if the current user is already following the profile user
+    follow_relationship = Follow.objects.filter(follower=current_user, following=profile_user)
+    
+    if follow_relationship.exists():
+        # Unfollow if already following
+        follow_relationship.delete()
+    else:
+        # Follow if not already following
+        Follow.objects.create(follower=current_user, following=profile_user)
+    
+    # Redirect back to the profile page
+    return HttpResponseRedirect(reverse('profile', kwargs={'user_id': profile_user.id}))
+
+
+def following(request):
+    current_user = User.objects.get(pk=request.user.id)
+    
+    # Get a list of users the current user is following
+    following_users = Follow.objects.filter(follower=current_user).values_list('following', flat=True)
+    
+    # Filter posts where the poster is in the following list
+    follow_post = Post.objects.filter(poster__in=following_users).order_by('-last_updated')
+    
+    # Paginate the posts
+    paginator = Paginator(follow_post, 10)
+    page_number = request.GET.get('page')
+    post_of_page = paginator.get_page(page_number)
+    
+    # Render the following posts page
+    return render(request, "network/following.html", {
+        "post_of_page": post_of_page,
     })
