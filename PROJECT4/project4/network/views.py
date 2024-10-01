@@ -1,11 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
 from .models import User,Post,PostComment,Follow
-
+import json
 
 def index(request):
     all_post= Post.objects.all().order_by('last_updated').reverse()
@@ -145,3 +145,19 @@ def following(request):
     return render(request, "network/following.html", {
         "post_of_page": post_of_page,
     })
+
+from django.http import JsonResponse
+
+def edit(request, post_id):
+    if request.method == "POST":
+        try:
+            post = Post.objects.get(pk=post_id, poster=request.user)
+            data = json.loads(request.body)
+            post.post_content = data.get("content", "")
+            post.save()
+
+            # Return the updated content
+            return JsonResponse({"messege":"Change Successful","data": post.post_content}, status=200)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Post not found"}, status=404)
+    return JsonResponse({"error": "Invalid request method"}, status=400)
