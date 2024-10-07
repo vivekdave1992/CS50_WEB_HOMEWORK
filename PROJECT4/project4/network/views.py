@@ -4,17 +4,24 @@ from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
-from .models import User,Post,PostComment,Follow
+from .models import User,Post,PostComment,Follow,Liked
 import json
 
 def index(request):
-    all_post= Post.objects.all().order_by('last_updated').reverse()
-    paginator = Paginator(all_post,10)
+    all_post = Post.objects.all().order_by('last_updated').reverse()
+    user_liked = []
+
+    # Get the post IDs the user has liked
+    if request.user.is_authenticated:
+        user_like = Liked.objects.filter(user=request.user).values_list('post_id', flat=True)
+    paginator = Paginator(all_post, 10)
     page_number = request.GET.get('page')
     post_of_page = paginator.get_page(page_number)
-    return render(request, "network/index.html",{
-        "all_post":all_post,
-        "post_of_page":post_of_page,
+
+    return render(request, "network/index.html", {
+        "all_post": all_post,
+        "post_of_page": post_of_page,
+        "user_like": list(user_like)  # Convert to list
     })
 
 
@@ -161,3 +168,30 @@ def edit(request, post_id):
         except Post.DoesNotExist:
             return JsonResponse({"error": "Post not found"}, status=404)
     return JsonResponse({"error": "Invalid request method"}, status=400)
+
+
+def add_like(request, post_id):
+    # This should add a like
+    post = Post.objects.get(pk=post_id)
+    user = User.objects.get(pk=request.user.id)
+    # Check if a like already exists, if not, add the like
+    like, created = Liked.objects.get_or_create(user=user, post=post)
+    if created:
+        return JsonResponse({"message": "Liked"}, status=200)
+    else:
+        return JsonResponse({"message": "Already liked"}, status=200)
+
+
+def remove_like(request, post_id):
+    # This should remove the like
+    post = Post.objects.get(pk=post_id)
+    user = User.objects.get(pk=request.user.id)
+    # Find and delete the like
+    like = Liked.objects.filter(user=user, post=post)
+    if like.exists():
+        like.delete()
+        return JsonResponse({"message": "Unliked"}, status=200)
+    else:
+        return JsonResponse({"message": "Not liked yet"}, status=200)
+
+

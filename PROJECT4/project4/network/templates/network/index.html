@@ -53,6 +53,24 @@
                           </div>
                         </div>
                       </div>
+                {% else %}
+                    {% if post.id in user_like %}
+                        <!-- User already liked this post -->
+                        <button class="btn btn-info fa fa-thumbs-down col-1" style="color: blue;" 
+                            id="unlike-{{ post.id }}" 
+                            onclick="likeHandler({{ post.id }}, true)"></button>
+                        <button class="btn btn-info fa fa-thumbs-up col-1" style="color: black; display: none;" 
+                            id="like-{{ post.id }}" 
+                            onclick="likeHandler({{ post.id }}, false)"></button>
+                    {% else %}
+                        <!-- User has not liked this post -->
+                        <button class="btn btn-info fa fa-thumbs-up col-1" style="color: black;" 
+                            id="like-{{ post.id }}" 
+                            onclick="likeHandler({{ post.id }}, false)"></button>
+                        <button class="btn btn-info fa fa-thumbs-down col-1" style="color: blue; display: none;" 
+                            id="unlike-{{ post.id }}" 
+                            onclick="likeHandler({{ post.id }}, true)"></button>
+                    {% endif %}
                 {%endif%}
             {%endif%}
         </div>

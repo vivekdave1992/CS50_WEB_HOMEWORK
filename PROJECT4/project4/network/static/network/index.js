@@ -37,3 +37,31 @@ function submitHandler(post_id) {
     console.error("Error:", error);
   });
 }
+
+function likeHandler(post_id, isLiked) {
+  if (isLiked) {
+      // Unlike the post
+      fetch(`/remove_like/${post_id}`)
+          .then(response => response.json())
+          .then(result => {
+              console.log(result.message);
+
+              // Hide the "unlike" button and show the "like" button
+              document.getElementById(`unlike-${post_id}`).style.display = 'none';
+              document.getElementById(`like-${post_id}`).style.display = 'inline-block';
+          })
+          .catch(error => console.error('Error:', error));
+  } else {
+      // Like the post
+      fetch(`/add_like/${post_id}`)
+          .then(response => response.json())
+          .then(result => {
+              console.log(result.message);
+
+              // Hide the "like" button and show the "unlike" button
+              document.getElementById(`like-${post_id}`).style.display = 'none';
+              document.getElementById(`unlike-${post_id}`).style.display = 'inline-block';
+          })
+          .catch(error => console.error('Error:', error));
+  }
+}

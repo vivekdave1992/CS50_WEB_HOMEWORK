@@ -62,7 +62,6 @@ class Follow(models.Model):
     follower = models.ForeignKey(User, related_name='following_set', on_delete=models.CASCADE)
     following = models.ForeignKey(User, related_name='follower_set', on_delete=models.CASCADE)
     followed_at = models.DateTimeField(auto_now_add=True)
-
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['follower', 'following'], name='unique_following')
@@ -77,3 +76,13 @@ class Follow(models.Model):
     def __str__(self):
         return f"{self.follower.username} follows {self.following.username}"
 
+
+
+
+class Liked(models.Model):
+    user = models.ForeignKey(User, related_name='user_like', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='post_like', on_delete=models.CASCADE)
+    date_added = models.DateTimeField(auto_now_add=True)
+    
+    def __str(self):
+        return f"{self.user.username} liked{self.post}"
