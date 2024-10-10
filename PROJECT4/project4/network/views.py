@@ -17,11 +17,16 @@ def index(request):
     paginator = Paginator(all_post, 10)
     page_number = request.GET.get('page')
     post_of_page = paginator.get_page(page_number)
+    comments = []
+    # Get comments for posts in the current page
+    # Prepare comments mapping
+    comments = PostComment.objects.select_related('author').all()
 
     return render(request, "network/index.html", {
         "all_post": all_post,
         "post_of_page": post_of_page,
-        "user_like": list(user_like)  # Convert to list
+        "user_like": list(user_liked),  # Convert to list
+        "comments": comments,  # Pass comments dictionary
     })
 
 
@@ -90,28 +95,45 @@ def add_post(request):
     else:
         return HttpResponseRedirect(reverse('index'))  # If request is not POST
 
+from django.shortcuts import render
+from .models import Post, PostComment, Liked, Follow
+from django.core.paginator import Paginator
 
-def profile(request,user_id):
+def profile(request, user_id):
     profile_user = User.objects.get(pk=user_id)
-    all_post= Post.objects.filter(poster=profile_user).order_by('last_updated').reverse()
+    all_post = Post.objects.filter(poster=profile_user).order_by('last_updated').reverse()
+    
+    # Followers and following information
     followers = Follow.objects.filter(following=profile_user)
     following = Follow.objects.filter(follower=profile_user)
-    current_user =  User.objects.get(pk= request.user.id)
+    
+    current_user = request.user
     isFollowing = False
     if request.user.is_authenticated:
         isFollowing = followers.filter(follower=current_user).exists()
-        
-    paginator = Paginator(all_post,10)
+
+    # Pagination for posts
+    paginator = Paginator(all_post, 10)
     page_number = request.GET.get('page')
     post_of_page = paginator.get_page(page_number)
-    
-    return render(request, "network/profile.html",{
-        "all_post":all_post,
-        "post_of_page":post_of_page,
-        "profile_user":profile_user,
-        "followers":followers,
-        "following":following,
+
+    # Gather the comments for the current page posts
+    comments = PostComment.objects.filter(post__in=post_of_page).select_related('author')
+
+    # Determine the posts the current user has liked
+    user_liked = []
+    if request.user.is_authenticated:
+        user_liked = Liked.objects.filter(user=current_user, post__in=post_of_page).values_list('post_id', flat=True)
+
+    return render(request, "network/profile.html", {
+        "all_post": all_post,
+        "post_of_page": post_of_page,
+        "profile_user": profile_user,
+        "followers": followers,
+        "following": following,
         "isFollowing": isFollowing,
+        "user_like": list(user_liked),  # Posts liked by the current user
+        "comments": comments  # All comments related to the posts in the current page
     })
 
 def follow_toggle(request):
@@ -133,9 +155,8 @@ def follow_toggle(request):
     # Redirect back to the profile page
     return HttpResponseRedirect(reverse('profile', kwargs={'user_id': profile_user.id}))
 
-
 def following(request):
-    current_user = User.objects.get(pk=request.user.id)
+    current_user = request.user  # Use request.user directly as it's already available
     
     # Get a list of users the current user is following
     following_users = Follow.objects.filter(follower=current_user).values_list('following', flat=True)
@@ -143,15 +164,25 @@ def following(request):
     # Filter posts where the poster is in the following list
     follow_post = Post.objects.filter(poster__in=following_users).order_by('-last_updated')
     
+    # Get post IDs the current user has liked
+    user_liked = Liked.objects.filter(user=current_user).values_list('post_id', flat=True)
+    
     # Paginate the posts
     paginator = Paginator(follow_post, 10)
     page_number = request.GET.get('page')
     post_of_page = paginator.get_page(page_number)
     
-    # Render the following posts page
+    # Get comments for the posts on the current page
+    post_ids = post_of_page.object_list.values_list('id', flat=True)
+    comments = PostComment.objects.filter(post_id__in=post_ids).select_related('author')
+    
+    # Render the following posts page with likes and comments
     return render(request, "network/following.html", {
         "post_of_page": post_of_page,
+        "user_like": list(user_liked),  # List of post IDs liked by the current user
+        "comments": comments,  # List of comments for the posts on this page
     })
+
 
 from django.http import JsonResponse
 
@@ -194,4 +225,20 @@ def remove_like(request, post_id):
     else:
         return JsonResponse({"message": "Not liked yet"}, status=200)
 
+def add_comment(request, post_id):
+    if request.method == "POST":
+        content = request.POST.get("content")  # Using .get() to avoid KeyError
+        if content:  # Ensure that content is not empty
+            post = Post.objects.get(pk=post_id)
+            user = User.objects.get(pk=request.user.id)
+            comment = PostComment(author=user, post=post, message=content)
+            comment.save()
 
+            # Redirect back to the page the comment was made on
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('index')))
+        else:
+            # If content is empty, handle this (you can add an error message here)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('index')))
+    else:
+        # For non-POST requests, redirect to the index page
+        return HttpResponseRedirect(reverse('index'))

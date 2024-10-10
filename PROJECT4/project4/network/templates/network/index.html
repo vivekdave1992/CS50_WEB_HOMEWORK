@@ -19,7 +19,7 @@
     </div>
     <div id="all_post" class="post-container">
         {% for post in post_of_page %}
-        <div class="post-card">
+        <div class="post-card ">
             <div class="post-header">
             <a href="{% url 'profile' user_id=post.poster.id %}"><h5 class="username" >@{{ post.poster.username }}</h5></a>
             </div>
@@ -29,11 +29,28 @@
             <div class="post-footer">
                 <p class="date">Last updated: {{ post.last_updated }}</p>
             </div>
-            {% if user.is_authenticated %}
-                {% if user == post.poster%}
-                    <div class="d-flex " >
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#model_edit_post_{{ post.id }}" >Edit</button>
+
+            <div class="comment-card" id="comment-{{ post.id }}" style="display: none;">
+                <form id="comment-form" action="{% url 'add_comment' post.id %}" method="post">
+                    {% csrf_token %}
+                    <textarea class="form-control" id="comment-body" name="content"></textarea>
+            
+                    <!-- Align Save button on the right side -->
+                    <div class="d-flex justify-content-end mt-2">
+                        <button id="submit-btn" class="btn btn-primary">Save</button>
                     </div>
+                </form>
+            </div>
+            
+            {% if user.is_authenticated %}
+            {% if user == post.poster%}
+                    <div class="d-flex justify-content-between " >
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#model_edit_post_{{ post.id }}" >Edit</button>
+                        <div>
+                            <button type="button" class="btn btn-secondary ml-2 justify-content-end" id="toggle-comment-{{ post.id }}" onclick="toggleCommentForm({{ post.id }})" >Comment</button>
+                        </div>
+                    </div>
+                    
                     <div class="modal" id ="model_edit_post_{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="model_edit_post_{{ post.id }}_label" aria-hidden="true" >
                         <div class="modal-dialog" role="document">
                           <div class="modal-content">
@@ -52,8 +69,10 @@
                             </div>
                           </div>
                         </div>
-                      </div>
+                    </div>
+                      
                 {% else %}
+                    <div class="d-flex justify-content-between">
                     {% if post.id in user_like %}
                         <!-- User already liked this post -->
                         <button class="btn btn-info fa fa-thumbs-down col-1" style="color: blue;" 
@@ -71,9 +90,27 @@
                             id="unlike-{{ post.id }}" 
                             onclick="likeHandler({{ post.id }}, true)"></button>
                     {% endif %}
+                    <button type="button" class="btn btn-secondary ml-2 justify-content-end" id="toggle-comment-{{ post.id }}" onclick="toggleCommentForm({{ post.id }})" >Comment</button>
+                    </div>
                 {%endif%}
             {%endif%}
+            
+            <!-- Display comments for the post -->
+             <h5>Comments</h5>
+            <div class="comments-section">
+                {% for comment in comments %}
+                    {% if comment.post.id == post.id %}
+                        <div class="comment">
+                            <p><strong>{{ comment.author.username }}</strong>: {{ comment.message }}</p>
+                            <small class="text-muted">{{ comment.comment_time|date:"F j, Y, g:i a" }}</small>
+                        </div>
+                    {% endif %}
+                {% empty %}
+                    <p>No comments yet.</p>
+                {% endfor %}
+            </div>
         </div>
+        
         {% endfor %}
     </div>
 

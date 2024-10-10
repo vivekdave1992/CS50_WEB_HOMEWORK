@@ -65,3 +65,15 @@ function likeHandler(post_id, isLiked) {
           .catch(error => console.error('Error:', error));
   }
 }
+
+function toggleCommentForm(post_id) {
+  // Get the comment form element by post ID
+  const commentForm = document.getElementById(`comment-${post_id}`);
+
+  // Toggle the display property of the comment form
+  if (commentForm.style.display === 'none' || commentForm.style.display === '') {
+      commentForm.style.display = 'block';
+  } else {
+      commentForm.style.display = 'none';
+  }
+}
